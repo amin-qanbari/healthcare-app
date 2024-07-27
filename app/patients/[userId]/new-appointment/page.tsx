@@ -4,9 +4,13 @@ import { Button } from "@/components/ui/button";
 import { getPatient } from "@/lib/actions/patient.actions";
 import Image from "next/image";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 
 export default async function NewAppointment({params: {userId}} : SearchParamProps) {
-    const patient = await getPatient(userId)
+  const patient = await getPatient(userId)
+  
+  Sentry.metrics.set("user_view_new-appointment", patient.name)
+
     
   return (
     <div className="flex h-screen max-h-screen">
@@ -21,9 +25,9 @@ export default async function NewAppointment({params: {userId}} : SearchParamPro
           />
 
           <AppointmentForm
-          type="create"
+          patientId={patient?.$id}
           userId={userId}
-          patientId={patient.$id}
+          type="create"
           />
           <p className="copyright mt-10 py-12">
             © 2024 CarePulse
